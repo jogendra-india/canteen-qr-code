@@ -3,7 +3,7 @@ import QrScanner from "react-qr-scanner";
 
 const QrCodeScanner = () => {
   const [scanResult, setScanResult] = useState(null);
-  const [facingMode, setFacingMode] = useState("environment"); // Default to back camera
+  const [isBackCamera, setIsBackCamera] = useState(true);
 
   const handleScan = (data) => {
     if (data) {
@@ -16,9 +16,7 @@ const QrCodeScanner = () => {
   };
 
   const toggleCamera = () => {
-    setFacingMode((prevMode) =>
-      prevMode === "environment" ? "user" : "environment"
-    );
+    setIsBackCamera((prevState) => !prevState);
   };
 
   return (
@@ -29,7 +27,7 @@ const QrCodeScanner = () => {
         onError={handleError}
         onScan={handleScan}
         style={{ width: "600px", margin: "auto" }}
-        facingMode={facingMode} // Use the state to determine which camera to use
+        facingMode={isBackCamera ? "environment" : "user"} // Switch between back and front cameras
       />
       {scanResult ? (
         <p>Scanned Result: {scanResult}</p>
