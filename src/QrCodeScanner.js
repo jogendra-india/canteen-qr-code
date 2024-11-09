@@ -22,6 +22,7 @@ const QrCodeScanner = () => {
         onError={handleError}
         onScan={handleScan}
         style={{ width: "600px", margin: "auto" }}
+        facingMode="environment" // This specifies the back camera
       />
       {scanResult ? (
         <p>Scanned Result: {scanResult}</p>
