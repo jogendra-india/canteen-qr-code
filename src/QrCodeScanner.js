@@ -3,7 +3,8 @@ import { QrReader } from "react-qr-reader";
 
 const QrCodeScanner = () => {
   const [scanResult, setScanResult] = useState(null);
-  const [facingMode, setFacingMode] = useState("environment"); // Start with back camera
+  const [facingMode, setFacingMode] = useState("user"); // Start with back camera
+  console.log('whichcamera', facingMode)
 
   // Handle QR Code Scan Result
   const handleScan = (result) => {
@@ -40,7 +41,9 @@ const QrCodeScanner = () => {
         <p>Scanned Result: {scanResult}</p>
       ) : (
         <p>Scan a QR code to see the result here</p>
-      )}
+      )} <br />
+      facingMode: {facingMode}
+      <br />
       <button onClick={handleClick} style={{ marginTop: "20px" }}>
         Switch Camera
       </button>
