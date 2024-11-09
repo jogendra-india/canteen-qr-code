@@ -1,30 +1,25 @@
 import React, { useState, useCallback } from "react";
 import { QrReader } from "react-qr-reader";
 
-const FACING_MODE_USER = "user";
-const FACING_MODE_ENVIRONMENT = "environment";
-
 const QrCodeScanner = () => {
   const [scanResult, setScanResult] = useState(null);
-  const [facingMode, setFacingMode] = useState(FACING_MODE_ENVIRONMENT);
+  const [facingMode, setFacingMode] = useState("environment"); // Start with back camera
 
   // Handle QR Code Scan Result
-  const handleScan = (data) => {
-    if (data) {
-      setScanResult(data.text);
+  const handleScan = (result) => {
+    if (result) {
+      setScanResult(result?.text || "");
     }
   };
 
-  const handleError = (err) => {
-    console.error("QR Code Scan Error: ", err);
+  const handleError = (error) => {
+    console.error("QR Code Scan Error: ", error);
   };
 
   // Toggle Camera
   const handleClick = useCallback(() => {
-    setFacingMode((prevState) =>
-      prevState === FACING_MODE_USER
-        ? FACING_MODE_ENVIRONMENT
-        : FACING_MODE_USER
+    setFacingMode((prevMode) =>
+      prevMode === "user" ? "environment" : "user"
     );
   }, []);
 
@@ -33,9 +28,12 @@ const QrCodeScanner = () => {
       <h1>QR Code Scanner</h1>
       <QrReader
         delay={300}
-        onError={handleError}
-        onResult={handleScan}
         constraints={{ facingMode }}
+        onError={handleError}
+        onResult={(result, error) => {
+          if (result) handleScan(result);
+          if (error) handleError(error);
+        }}
         style={{ width: "600px", margin: "auto" }}
       />
       {scanResult ? (
