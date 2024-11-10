@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'; // Use 'react-dom' instead of 'react-dom/clien
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import 'webrtc-adapter';
 
 // Use ReactDOM.render instead of createRoot
 ReactDOM.render(

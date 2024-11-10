@@ -93,10 +93,10 @@ function App() {
             Home
           </NavLink>
           <NavLink
-            to='/unpaid-employees'
+            to='/unpaid-transactions'
             className={({ isActive }) => (isActive ? 'active-link' : 'inactive-link')}
           >
-            Unpaid Employees
+            Unpaid Transactions
           </NavLink>
           <NavLink
             to='/all-transactions'
@@ -134,7 +134,7 @@ function App() {
               ) : null
             }
           />
-          <Route path='/unpaid-employees' element={<UnpaidEmployees />} />
+          <Route path='/unpaid-transactions' element={<UnpaidEmployees />} />
           <Route path='/all-employees' element={<UnpaidEmployees />} />
           <Route path='/all-transactions' element={<AllTransactions />} />
         </Routes>
