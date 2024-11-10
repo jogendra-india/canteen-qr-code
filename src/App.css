@@ -68,3 +68,79 @@ h2 {
 .submit-button:hover {
   background-color: #218838;
 }
+
+.App nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.App nav a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.App nav a:hover {
+  text-decoration: underline;
+}
+
+.loading {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.transactions-table th,
+.transactions-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.transactions-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.mark-as-paid-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.mark-as-paid-button:hover {
+  background-color: #218838;
+}
+
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.loading {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}

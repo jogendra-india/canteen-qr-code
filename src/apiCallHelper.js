@@ -2,9 +2,20 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const apiCallHelper = async (endpoint, method = 'GET', data = null, headers = {}) => {
+const apiCallHelper = async (
+  endpoint,
+  method = 'GET',
+  data = null,
+  headers = {}
+) => {
   const baseUrl = process.env.REACT_APP_SERVER_URL; // Load the server address from .env
-  const url = `${baseUrl}${endpoint}/`;
+  let url;
+  console.log('showsmss', endpoint);
+  if (endpoint.includes('?')) {
+    url = `${baseUrl}${endpoint}`;
+} else {
+    url = `${baseUrl}${endpoint}/`;
+  }
 
   try {
     const response = await axios({
@@ -15,7 +26,8 @@ const apiCallHelper = async (endpoint, method = 'GET', data = null, headers = {}
     });
     return response.data;
   } catch (error) {
-    const errorMessage = error.response?.data?.message || 'Something went wrong!';
+    const errorMessage =
+      error.response?.data?.message || 'Something went wrong!';
     toast.error(errorMessage); // Use toast directly without configure
     throw error;
   }

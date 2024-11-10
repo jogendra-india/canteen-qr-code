@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import QrCodeScanner from './QrCodeScanner';
 import apiCallHelper from './apiCallHelper';
+import UnpaidEmployees from './UnpaidEmployees'; // Import the new component
+import AllTransactions from './AllTransactions';
 import './App.css';
 
 function App() {
@@ -80,31 +83,48 @@ function App() {
   }
 
   return (
-    <div className='App'>
-      {showScanner ? (
-        <QrCodeScanner onScan={handleScanResult} />
-      ) : matchedEmployee ? (
-        <div className='centered-container'>
-          <h2>Welcome, {matchedEmployee.name}</h2>
-          <div className='meal-options'>
-            {['Breakfast', 'Tea', 'Lunch'].map((meal) => (
-              <div
-                key={meal}
-                className={`meal-card ${
-                  selectedMeals.includes(meal) ? 'selected' : ''
-                }`}
-                onClick={() => handleMealSelection(meal)}
-              >
-                {meal}
-              </div>
-            ))}
-          </div>
-          <button onClick={handleSubmit} className='submit-button'>
-            Submit
-          </button>
-        </div>
-      ) : null}
-    </div>
+    <Router>
+      <div className='App'>
+        <nav>
+          <Link to='/'>Home</Link>
+          <Link to='/unpaid-employees'>Unpaid Employees</Link>
+          <Link to='/all-transactions'>All Transactions</Link>
+        </nav>
+        <Routes>
+          <Route
+            path='/'
+            element={
+              showScanner ? (
+                <QrCodeScanner onScan={handleScanResult} />
+              ) : matchedEmployee ? (
+                <div className='centered-container'>
+                  <h2>Welcome, {matchedEmployee.name}</h2>
+                  <div className='meal-options'>
+                    {['Breakfast', 'Tea', 'Lunch'].map((meal) => (
+                      <div
+                        key={meal}
+                        className={`meal-card ${
+                          selectedMeals.includes(meal) ? 'selected' : ''
+                        }`}
+                        onClick={() => handleMealSelection(meal)}
+                      >
+                        {meal}
+                      </div>
+                    ))}
+                  </div>
+                  <button onClick={handleSubmit} className='submit-button'>
+                    Submit
+                  </button>
+                </div>
+              ) : null
+            }
+          />
+          <Route path='/unpaid-employees' element={<UnpaidEmployees />} />
+          <Route path='/all-employees' element={<UnpaidEmployees />} />
+          <Route path='/all-transactions' element={<AllTransactions />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
