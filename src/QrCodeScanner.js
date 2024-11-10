@@ -28,6 +28,7 @@ const QrCodeScanner = () => {
     <div style={{ textAlign: "center" }}>
       <h1>QR Code Scanner</h1>
       <QrReader
+        key={facingMode}
         delay={300}
         constraints={{ facingMode }}
         onError={handleError}
