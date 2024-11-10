@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link, NavLink } from 'react-router-dom';
 import QrCodeScanner from './QrCodeScanner';
 import apiCallHelper from './apiCallHelper';
 import UnpaidEmployees from './UnpaidEmployees'; // Import the new component
@@ -86,9 +86,24 @@ function App() {
     <Router>
       <div className='App'>
         <nav>
-          <Link to='/'>Home</Link>
-          <Link to='/unpaid-employees'>Unpaid Employees</Link>
-          <Link to='/all-transactions'>All Transactions</Link>
+          <NavLink
+            to='/'
+            className={({ isActive }) => (isActive ? 'active-link' : 'inactive-link')}
+          >
+            Home
+          </NavLink>
+          <NavLink
+            to='/unpaid-employees'
+            className={({ isActive }) => (isActive ? 'active-link' : 'inactive-link')}
+          >
+            Unpaid Employees
+          </NavLink>
+          <NavLink
+            to='/all-transactions'
+            className={({ isActive }) => (isActive ? 'active-link' : 'inactive-link')}
+          >
+            All Transactions
+          </NavLink>
         </nav>
         <Routes>
           <Route

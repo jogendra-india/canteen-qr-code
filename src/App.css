@@ -144,3 +144,31 @@ h2 {
   font-weight: bold;
   text-align: center;
 }
+
+nav {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  background-color: #f8f9fa;
+}
+
+nav a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  padding: 5px 10px;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #0056b3;
+}
+
+.active-link {
+  color: #28a745; /* Active link color - change to your preference */
+  border-bottom: 2px solid #28a745; /* Optional underline to indicate active link */
+}
+
+.inactive-link {
+  color: #007bff; /* Default link color */
+}
