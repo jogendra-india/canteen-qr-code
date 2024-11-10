@@ -10,7 +10,6 @@ const apiCallHelper = async (
 ) => {
   const baseUrl = process.env.REACT_APP_SERVER_URL; // Load the server address from .env
   let url;
-  console.log('showsmss', endpoint);
   if (endpoint.includes('?')) {
     url = `${baseUrl}${endpoint}`;
 } else {
