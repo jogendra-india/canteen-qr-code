@@ -12,7 +12,7 @@ const QrCodeScanner = ({ onScan }) => {
 
   return (
     <div style={{ textAlign: 'center' }}>
-      <h1>BHEL Canteen Scan</h1>
+      <h1>BHEL Canteen QR Scan</h1>
       <QrReader
         key={facingMode}
         constraints={{ facingMode }}
