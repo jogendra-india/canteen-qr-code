@@ -38,7 +38,7 @@ const QrCodeScanner = ({ onScan }) => {
       </div>
       <input
         type='text'
-        placeholder='Enter Staff No'
+        placeholder='or enter Staff No'
         onChange={(e) => onScan(e.target.value)}
         style={{
           width: '80%',
