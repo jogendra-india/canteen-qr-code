@@ -46,40 +46,46 @@ const AllTransactions = () => {
     <div className='centered-container'>
       <h2>All Transactions</h2>
       {allTransactions.length > 0 ? (
-        <table className='transactions-table'>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Name</th>
-              <th>Staff No</th>
-              <th>Canteen Menu</th>
-              <th>Total Cost</th>
-              <th>Meals</th>
-              <th>Payment Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {allTransactions.map((transaction) => (
-              <tr key={transaction.id}>
-                <td>{formatDate(transaction.date)}</td>
-                <td>{transaction.staff.name}</td>
-                <td>{transaction.staff.staff_no}</td>
-                <td>{transaction.canteen_menu}</td>
-                <td>{formatCurrency(transaction.total_cost)}</td>
-                <td>
-                  {[
-                    transaction.breakfast && 'Breakfast',
-                    transaction.lunch && 'Lunch',
-                    transaction.tea && 'Tea',
-                  ]
-                    .filter(Boolean)
-                    .join(', ')}
-                </td>
-                <td>{transaction.is_paid ? 'Paid' : 'Not Paid'}</td>
+        <div className='transactions-table-container'>
+          <table className='transactions-table'>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Name (Staff)</th>
+                <th>Total Cost</th>
+                <th>Meals</th>
+                <th>Payment Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {allTransactions.map((transaction) => (
+                <tr key={transaction.id}>
+                  <td>{formatDate(transaction.date)}</td>
+                  <td>
+                    {`${transaction.staff.name
+                      .toLowerCase()
+                      .split(' ')
+                      .map(
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(' ')} (${transaction.staff.staff_no})`}
+                  </td>
+                  <td>{formatCurrency(transaction.total_cost)}</td>
+                  <td>
+                    {[
+                      transaction.breakfast && 'Breakfast',
+                      transaction.lunch && 'Lunch',
+                      transaction.tea && 'Tea',
+                    ]
+                      .filter(Boolean)
+                      .join(', ')}
+                  </td>
+                  <td>{transaction.is_paid ? 'Paid' : 'Not Paid'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <p>No transactions found.</p>
       )}

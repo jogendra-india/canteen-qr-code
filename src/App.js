@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { HashRouter as Router, Route, Routes, NavLink, Navigate } from 'react-router-dom';
+import {
+  HashRouter as Router,
+  Route,
+  Routes,
+  NavLink,
+  Navigate,
+} from 'react-router-dom';
 import QrCodeScanner from './QrCodeScanner';
 import apiCallHelper from './apiCallHelper';
 import UnpaidEmployees from './UnpaidEmployees'; // Import the new component
@@ -12,6 +18,7 @@ function App() {
   const [matchedEmployee, setMatchedEmployee] = useState(null);
   const [selectedMeals, setSelectedMeals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state for disabling Submit button
 
   // Function to fetch all employees
   const fetchAllEmployees = async () => {
@@ -54,8 +61,10 @@ function App() {
 
   // Function to submit selected meals
   const handleSubmit = async () => {
+    if (isSubmitting) return; // Prevent multiple submissions
     if (matchedEmployee && selectedMeals.length > 0) {
-      // Prepare the payload in the required format
+      setIsSubmitting(true); // Disable Submit button
+
       const payload = {
         staff_id: matchedEmployee.staff_no,
         breakfast: selectedMeals.includes('Breakfast'),
@@ -67,11 +76,13 @@ function App() {
         await apiCallHelper('/transactions', 'POST', payload);
         alert('Transaction successful!');
         setMatchedEmployee(null);
-        setSelectedMeals([]);
+        setSelectedMeals([]); // Reset selection
         setShowScanner(true);
       } catch (error) {
         console.error('Error submitting transaction:', error);
         alert('Failed to submit transaction.');
+      } finally {
+        setIsSubmitting(false); // Enable Submit button
       }
     } else {
       alert('Please select at least one meal.');
@@ -82,25 +93,39 @@ function App() {
     return <div className='loading'>Loading data...</div>;
   }
 
+  const capitalizeName = (name) => {
+    return name
+      .toLowerCase()
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   return (
     <Router>
       <div className='App'>
         <nav>
           <NavLink
             to='/'
-            className={({ isActive }) => (isActive ? 'active-link' : 'inactive-link')}
+            className={({ isActive }) =>
+              isActive ? 'active-link' : 'inactive-link'
+            }
           >
             Home
           </NavLink>
           <NavLink
             to='/unpaid-transactions'
-            className={({ isActive }) => (isActive ? 'active-link' : 'inactive-link')}
+            className={({ isActive }) =>
+              isActive ? 'active-link' : 'inactive-link'
+            }
           >
             Unpaid Transactions
           </NavLink>
           <NavLink
             to='/all-transactions'
-            className={({ isActive }) => (isActive ? 'active-link' : 'inactive-link')}
+            className={({ isActive }) =>
+              isActive ? 'active-link' : 'inactive-link'
+            }
           >
             All Transactions
           </NavLink>
@@ -112,8 +137,8 @@ function App() {
               showScanner ? (
                 <QrCodeScanner onScan={handleScanResult} />
               ) : matchedEmployee ? (
-                <div className='centered-container'>
-                  <h2>Welcome, {matchedEmployee.name}</h2>
+                <div className='centered-container-home'>
+                  <h2>Welcome, {capitalizeName(matchedEmployee.name)}</h2>
                   <div className='meal-options'>
                     {['Breakfast', 'Tea', 'Lunch'].map((meal) => (
                       <div
@@ -127,11 +152,30 @@ function App() {
                       </div>
                     ))}
                   </div>
-                  <button onClick={handleSubmit} className='submit-button'>
+                  <button
+                    onClick={handleSubmit}
+                    className='submit-button'
+                    disabled={isSubmitting} // Disable button when submitting
+                  >
                     Submit
                   </button>
+                  <button
+                    onClick={() => {
+                      setMatchedEmployee(null);
+                      setSelectedMeals([]); // Reset selection
+                      setShowScanner(true); // Show the scanner again
+                    }}
+                    className='cancel-button'
+                  >
+                    Cancel
+                  </button>
                 </div>
-              ) : null
+              ) : (
+                <div className='default-content'>
+                  <h2>Welcome to the Home Page</h2>
+                  <p>Please scan a QR code to begin.</p>
+                </div>
+              )
             }
           />
           <Route path='/unpaid-transactions' element={<UnpaidEmployees />} />

@@ -12,7 +12,7 @@ const QrCodeScanner = ({ onScan }) => {
 
   return (
     <div style={{ textAlign: 'center' }}>
-      <h1>BHEL Canteen QR Scan</h1>
+      <h2>BHEL Canteen QR Scan</h2>
       <QrReader
         key={facingMode}
         constraints={{ facingMode }}
@@ -23,12 +23,12 @@ const QrCodeScanner = ({ onScan }) => {
           }
 
           if (error) {
-            console.info('QR Code Scan Error: ', error);
+           // do nothing
+
           }
         }}
         style={{ width: '100%', maxWidth: '600px', margin: 'auto' }}
       />
-      <h3>or Enter Staff No:</h3>
       <input
         type='text'
         placeholder='Enter Staff No'

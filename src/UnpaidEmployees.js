@@ -19,7 +19,9 @@ const UnpaidEmployees = () => {
 
   // Function to mark a transaction as paid
   const markAsPaid = async (transactionId) => {
-    const confirm = window.confirm('Are you sure you want to mark this transaction as paid?');
+    const confirm = window.confirm(
+      'Are you sure you want to mark this transaction as paid?'
+    );
     if (confirm) {
       try {
         await apiCallHelper(`/transactions/${transactionId}`, 'PATCH', {
@@ -64,13 +66,12 @@ const UnpaidEmployees = () => {
     <div className='centered-container'>
       <h2>Unpaid Transactions</h2>
       {unpaidTransactions.length > 0 ? (
+        <div className='transactions-table-container'>
         <table className='transactions-table'>
           <thead>
             <tr>
               <th>Date</th>
-              <th>Name</th>
-              <th>Staff No</th>
-              <th>Canteen Menu</th>
+              <th>Name (Staff)</th>
               <th>Total Cost</th>
               <th>Meals</th>
               <th>Action</th>
@@ -80,9 +81,13 @@ const UnpaidEmployees = () => {
             {unpaidTransactions.map((transaction) => (
               <tr key={transaction.id}>
                 <td>{formatDate(transaction.date)}</td>
-                <td>{transaction.staff.name}</td>
-                <td>{transaction.staff.staff_no}</td>
-                <td>{transaction.canteen_menu}</td>
+                <td>
+                  {`${transaction.staff.name
+                    .toLowerCase()
+                    .split(' ')
+                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ')} (${transaction.staff.staff_no})`}
+                </td>
                 <td>{formatCurrency(transaction.total_cost)}</td>
                 <td>
                   {[
@@ -105,6 +110,7 @@ const UnpaidEmployees = () => {
             ))}
           </tbody>
         </table>
+        </div>
       ) : (
         <p>No unpaid transactions found.</p>
       )}
