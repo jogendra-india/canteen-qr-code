@@ -11,28 +11,44 @@ const QrCodeScanner = ({ onScan }) => {
   }, []);
 
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div style={{ textAlign: 'center', padding: '10px' }}>
       <h2>Canteen QR Scan</h2>
-      <QrReader
-        key={facingMode}
-        constraints={{ facingMode }}
-        onResult={(result, error) => {
-          if (result) {
-            setScanResult(result?.text || 'No result');
-            onScan(result?.text || 'No result');
-          }
-
-          if (error) {
-           // do nothing
-
-          }
+      <div
+        style={{
+          width: '100vw', // Full viewport width
+          margin: '0', // Remove any margin
+          padding: '0 20px', // Minimal padding on the sides
+          boxSizing: 'border-box',
         }}
-        style={{ width: '100%', maxWidth: '800px', margin: 'auto' }}
-      />
+      >
+        <QrReader
+          key={facingMode}
+          constraints={{ facingMode }}
+          onResult={(result, error) => {
+            if (result) {
+              setScanResult(result?.text || 'No result');
+              onScan(result?.text || 'No result');
+            }
+            if (error) {
+              // Do nothing
+            }
+          }}
+          style={{ width: '100%', height: '100%' }} // Full width and height
+        />
+      </div>
       <input
         type='text'
         placeholder='Enter Staff No'
         onChange={(e) => onScan(e.target.value)}
+        style={{
+          width: '80%',
+          maxWidth: '400px',
+          padding: '10px',
+          margin: '20px auto',
+          display: 'block',
+          textAlign: 'center',
+          boxSizing: 'border-box',
+        }}
       />
       <p>{scanResult}</p>
       <button onClick={handleClick} style={{ marginTop: '20px' }}>
