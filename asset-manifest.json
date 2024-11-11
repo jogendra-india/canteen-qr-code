@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/canteen-qr-code/static/css/main.b09f98be.css",
-    "main.js": "/canteen-qr-code/static/js/main.ef1f599b.js",
+    "main.css": "/canteen-qr-code/static/css/main.7c8d14c1.css",
+    "main.js": "/canteen-qr-code/static/js/main.df8b355d.js",
     "static/js/453.ac4636ff.chunk.js": "/canteen-qr-code/static/js/453.ac4636ff.chunk.js",
     "index.html": "/canteen-qr-code/index.html",
-    "main.b09f98be.css.map": "/canteen-qr-code/static/css/main.b09f98be.css.map",
-    "main.ef1f599b.js.map": "/canteen-qr-code/static/js/main.ef1f599b.js.map",
+    "main.7c8d14c1.css.map": "/canteen-qr-code/static/css/main.7c8d14c1.css.map",
+    "main.df8b355d.js.map": "/canteen-qr-code/static/js/main.df8b355d.js.map",
     "453.ac4636ff.chunk.js.map": "/canteen-qr-code/static/js/453.ac4636ff.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b09f98be.css",
-    "static/js/main.ef1f599b.js"
+    "static/css/main.7c8d14c1.css",
+    "static/js/main.df8b355d.js"
   ]
 }
