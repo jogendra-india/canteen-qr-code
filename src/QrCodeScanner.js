@@ -28,6 +28,12 @@ const QrCodeScanner = ({ onScan }) => {
         }}
         style={{ width: '100%', maxWidth: '600px', margin: 'auto' }}
       />
+      <h3>or Enter Staff No:</h3>
+      <input
+        type='text'
+        placeholder='Enter Staff No'
+        onChange={(e) => onScan(e.target.value)}
+      />
       <p>{scanResult}</p>
       <button onClick={handleClick} style={{ marginTop: '20px' }}>
         Switch Camera
