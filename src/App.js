@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, NavLink, Navigate } from 'react-router-dom';
 import QrCodeScanner from './QrCodeScanner';
 import apiCallHelper from './apiCallHelper';
 import UnpaidEmployees from './UnpaidEmployees'; // Import the new component
@@ -135,8 +135,9 @@ function App() {
             }
           />
           <Route path='/unpaid-transactions' element={<UnpaidEmployees />} />
-          <Route path='/all-employees' element={<UnpaidEmployees />} />
           <Route path='/all-transactions' element={<AllTransactions />} />
+          {/* Fallback Route: Redirect to Home */}
+          <Route path='*' element={<Navigate to='/' />} />
         </Routes>
       </div>
     </Router>
