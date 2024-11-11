@@ -157,6 +157,8 @@ nav a {
 
 input {
   text-align: center; /* Center the text and placeholder */
+  padding: 5px;
+  margin-top: 10px;
 }
 
 nav a:hover {

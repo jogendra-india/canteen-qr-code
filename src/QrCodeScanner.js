@@ -27,7 +27,7 @@ const QrCodeScanner = ({ onScan }) => {
 
           }
         }}
-        style={{ width: '100%', maxWidth: '600px', margin: 'auto' }}
+        style={{ width: '100%', maxWidth: '800px', margin: 'auto' }}
       />
       <input
         type='text'
