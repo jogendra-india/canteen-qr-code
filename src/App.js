@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, NavLink, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes, NavLink, Navigate } from 'react-router-dom';
 import QrCodeScanner from './QrCodeScanner';
 import apiCallHelper from './apiCallHelper';
 import UnpaidEmployees from './UnpaidEmployees'; // Import the new component
