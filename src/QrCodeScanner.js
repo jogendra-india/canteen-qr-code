@@ -3,7 +3,6 @@ import { QrReader } from 'react-qr-reader';
 
 const QrCodeScanner = ({ onScan }) => {
   const [scanResult, setScanResult] = useState('No result');
-  const [facingMode, setFacingMode] = useState('user'); // Start with front camera initially
   const [isMobile, setIsMobile] = useState(false);
 
   // 1) Retrieve brightness from localStorage or default to 1
@@ -12,10 +11,21 @@ const QrCodeScanner = ({ onScan }) => {
     return storedBrightness ? parseFloat(storedBrightness) : 1;
   });
 
+  // 1) Retrieve faceMode from localStorage or default to 1
+  const [facingMode, setFacingMode] = useState(() => {
+    const storedFacingMode = localStorage.getItem('facingMode');
+    return storedFacingMode ? storedFacingMode : 'user';
+  });
+
   // 2) Persist brightness in localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('brightness', brightness.toString());
   }, [brightness]);
+
+  // Persist facingMode in localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('facingMode', facingMode);
+  }, [facingMode]);
 
   // Detect screen size on mount and whenever resized
   useEffect(() => {
