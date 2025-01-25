@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   HashRouter as Router,
   Route,
@@ -8,9 +8,12 @@ import {
 } from 'react-router-dom';
 import QrCodeScanner from './QrCodeScanner';
 import apiCallHelper from './apiCallHelper';
-import UnpaidEmployees from './UnpaidEmployees'; // Import the new component
+import UnpaidEmployees from './UnpaidEmployees';
 import AllTransactions from './AllTransactions';
 import './App.css';
+
+// 1) Import the Toast component
+import Toast from './Toast';
 
 function App() {
   const [employees, setEmployees] = useState([]);
@@ -18,26 +21,65 @@ function App() {
   const [matchedEmployee, setMatchedEmployee] = useState(null);
   const [selectedMeals, setSelectedMeals] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false); // New state for disabling Submit button
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Function to fetch all employees
+  // --- Toast State ---
+  const [toast, setToast] = useState({
+    message: '',
+    type: 'success', // or 'error', 'warning', etc.
+    isVisible: false,
+  });
+  const toastTimerRef = useRef(null);
+
+  // Show toast for 3 seconds or until user closes
+  const showToast = (message, type = 'success', duration = 5000) => {
+    // Clear any previous timeout
+    if (toastTimerRef.current) {
+      clearTimeout(toastTimerRef.current);
+    }
+
+    setToast({ message, type, isVisible: true });
+
+    if (duration > 0) {
+      toastTimerRef.current = setTimeout(() => {
+        hideToast();
+      }, duration);
+    }
+  };
+
+  // Hide toast immediately
+  const hideToast = () => {
+    setToast((prev) => ({ ...prev, isVisible: false }));
+  };
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) {
+        clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Fetch all employees
   const fetchAllEmployees = async () => {
     setShowScanner(false); // Disable scanner until data is loaded
     try {
       const result = await apiCallHelper('/employees');
       console.log('result', result);
       setEmployees(result);
-      setLoading(false); // Data has loaded
+      setLoading(false);
       setShowScanner(true); // Enable scanner once data is loaded
     } catch (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
+      showToast('Error loading employees', 'error');
     }
   };
 
-  // Function to handle QR code scan result
+  // Handle QR code scan
   const handleScanResult = (scanResult) => {
-    if (!employees.length) return; // Exit if employees data is not loaded
+    if (!employees.length) return;
     const employee = employees.find((emp) => emp.staff_no === scanResult);
     if (employee) {
       setMatchedEmployee(employee);
@@ -45,25 +87,20 @@ function App() {
     }
   };
 
-  // Function to handle meal selection
+  // Meal selection toggle
   const handleMealSelection = (meal) => {
-    setSelectedMeals(
-      (prevMeals) =>
-        prevMeals.includes(meal)
-          ? prevMeals.filter((m) => m !== meal) // Deselect if already selected
-          : [...prevMeals, meal] // Add to selection
+    setSelectedMeals((prevMeals) =>
+      prevMeals.includes(meal)
+        ? prevMeals.filter((m) => m !== meal)
+        : [...prevMeals, meal]
     );
   };
 
-  useEffect(() => {
-    fetchAllEmployees();
-  }, []);
-
-  // Function to submit selected meals
+  // Submit selected meals
   const handleSubmit = async () => {
-    if (isSubmitting) return; // Prevent multiple submissions
+    if (isSubmitting) return;
     if (matchedEmployee && selectedMeals.length > 0) {
-      setIsSubmitting(true); // Disable Submit button
+      setIsSubmitting(true);
 
       const payload = {
         staff_id: matchedEmployee.staff_no,
@@ -74,25 +111,26 @@ function App() {
 
       try {
         await apiCallHelper('/transactions', 'POST', payload);
-        alert('Transaction successful!');
+        showToast('Transaction successful!', 'success');
         setMatchedEmployee(null);
-        setSelectedMeals([]); // Reset selection
+        setSelectedMeals([]);
         setShowScanner(true);
       } catch (error) {
         console.error('Error submitting transaction:', error);
-        alert('Failed to submit transaction.');
+        showToast('Failed to submit transaction.', 'error');
       } finally {
-        setIsSubmitting(false); // Enable Submit button
+        setIsSubmitting(false);
       }
     } else {
-      alert('Please select at least one meal.');
+      showToast('Please select at least one meal.', 'error');
     }
   };
 
-  if (loading) {
-    return <div className='loading'>Loading data...</div>;
-  }
+  useEffect(() => {
+    fetchAllEmployees();
+  }, []);
 
+  // Capitalize name
   const capitalizeName = (name) => {
     return name
       .toLowerCase()
@@ -101,9 +139,22 @@ function App() {
       .join(' ');
   };
 
+  if (loading) {
+    return <div className='loading'>Loading data...</div>;
+  }
+
   return (
     <Router>
       <div className='App'>
+        {/* 2) Render Toast only if isVisible is true */}
+        {toast.isVisible && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={hideToast}
+          />
+        )}
+
         <nav>
           <NavLink
             to='/'
@@ -113,14 +164,6 @@ function App() {
           >
             Home
           </NavLink>
-          {/* <NavLink
-            to='/unpaid-transactions'
-            className={({ isActive }) =>
-              isActive ? 'active-link' : 'inactive-link'
-            }
-          >
-            Unpaid Transactions
-          </NavLink> */}
           <NavLink
             to='/all-transactions'
             className={({ isActive }) =>
@@ -130,6 +173,7 @@ function App() {
             Transactions
           </NavLink>
         </nav>
+
         <Routes>
           <Route
             path='/'
@@ -155,15 +199,15 @@ function App() {
                   <button
                     onClick={handleSubmit}
                     className='submit-button'
-                    disabled={isSubmitting} // Disable button when submitting
+                    disabled={isSubmitting}
                   >
                     Submit
                   </button>
                   <button
                     onClick={() => {
                       setMatchedEmployee(null);
-                      setSelectedMeals([]); // Reset selection
-                      setShowScanner(true); // Show the scanner again
+                      setSelectedMeals([]);
+                      setShowScanner(true);
                     }}
                     className='cancel-button'
                   >

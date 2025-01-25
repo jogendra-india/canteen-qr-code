@@ -96,7 +96,7 @@ const QrCodeScanner = ({ onScan }) => {
           // 3) Remove autofocus by specifying advanced constraints if supported
           constraints={{
             facingMode,
-            advanced: [{ focusMode: 'manual', facingMode: facingMode }], 
+            advanced: [{ focusMode: 'manual' }], 
             // Some devices/browsers may not support this
           }}
           onResult={(result, error) => {
