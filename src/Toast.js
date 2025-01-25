@@ -1,13 +1,10 @@
 import React from 'react';
 
-const Toast = ({ message, type, onClose }) => {
-  if (!message) return null;
-
+const Toast = ({ message, type }) => {
+  // Simple inline styling. Move into CSS if you prefer.
   const containerStyle = {
-    position: 'fixed',
-    top: '20px',
-    right: '20px',
-    zIndex: 9999,
+    position: 'relative',
+    marginBottom: '10px',
     padding: '10px 15px',
     borderRadius: '5px',
     color: '#fff',
@@ -18,19 +15,10 @@ const Toast = ({ message, type, onClose }) => {
     backgroundColor: type === 'success' ? '#4caf50' : '#f44336',
   };
 
-  const closeButtonStyle = {
-    marginLeft: '10px',
-    background: 'none',
-    border: 'none',
-    color: '#fff',
-    fontSize: '14px',
-    cursor: 'pointer',
-  };
 
   return (
     <div style={containerStyle}>
       {message}
-      <button style={closeButtonStyle} onClick={onClose}>x</button>
     </div>
   );
 };
