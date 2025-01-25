@@ -1,53 +1,110 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { QrReader } from 'react-qr-reader';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import QrScanner from 'qr-scanner';
 
 const QrCodeScanner = ({ onScan }) => {
-  const [scanResult, setScanResult] = useState('No result');
-  const [isMobile, setIsMobile] = useState(false);
+  const videoRef = useRef(null);
+  const qrScannerRef = useRef(null);
 
-  // 1) Retrieve brightness from localStorage or default to 1
+  // Scan result text (for display)
+  const [scanResult, setScanResult] = useState('No result');
+
+  // Persisted brightness
   const [brightness, setBrightness] = useState(() => {
     const storedBrightness = localStorage.getItem('brightness');
     return storedBrightness ? parseFloat(storedBrightness) : 1;
   });
 
-  // 1) Retrieve faceMode from localStorage or default to 1
+  // Persisted facingMode
   const [facingMode, setFacingMode] = useState(() => {
     const storedFacingMode = localStorage.getItem('facingMode');
-    return storedFacingMode ? storedFacingMode : 'user';
+    return storedFacingMode || 'user'; // default to front camera
   });
 
-  // 2) Persist brightness in localStorage whenever it changes
+  // Detect if it's mobile for layout (optional)
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Persist brightness in localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('brightness', brightness.toString());
+    // Also update video element's filter if available
+    if (videoRef.current) {
+      videoRef.current.style.filter = `brightness(${brightness})`;
+    }
   }, [brightness]);
 
   // Persist facingMode in localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('facingMode', facingMode);
+    // If the scanner is already created, switch cameras
+    if (qrScannerRef.current) {
+      // The library allows picking a camera by "user" or "environment"
+      qrScannerRef.current.setCamera(facingMode).catch((err) => {
+        console.error('Camera switch error:', err);
+      });
+    }
   }, [facingMode]);
 
-  // Detect screen size on mount and whenever resized
+  // Initialize QrScanner on mount
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768); // mobile breakpoint
-    };
-    // Run once to set initial state
-    handleResize();
-    // Listen for resize events
-    window.addEventListener('resize', handleResize);
+    if (!videoRef.current) return;
 
-    // Cleanup listener on unmount
-    return () => window.removeEventListener('resize', handleResize);
+    // Create new QrScanner instance
+    qrScannerRef.current = new QrScanner(
+      videoRef.current,
+      (result) => {
+        // If we're using the new API (options object),
+        // result is an object: { data, cornerPoints, ... }
+        const text = result?.data || ''; // Safely handle missing data
+        setScanResult(text || 'No result');
+        onScan(text || 'No result');
+      },
+      {
+        // We prefer the user's chosen facingMode
+        preferredCamera: facingMode,
+        returnDetailedScanResult: true, // get the result object with .data
+        // You can tune other options, e.g. highlightScanRegion, maxScansPerSecond, etc.
+      }
+    );
+
+    // Start scanning
+    qrScannerRef.current.start().catch((err) => {
+      console.error('Camera start error:', err);
+    });
+
+    // Clean up on unmount
+    return () => {
+      if (qrScannerRef.current) {
+        qrScannerRef.current.stop();
+        qrScannerRef.current.destroy();
+      }
+    };
+    // We only want to run this once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Toggle camera mode (front vs. back)
+  // Update the video filter whenever brightness changes (in case the videoRef was not ready before).
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.style.filter = `brightness(${brightness})`;
+    }
+  }, [brightness]);
+
+  // Toggle camera (front vs. back)
   const handleClick = useCallback(() => {
-    setFacingMode((prevMode) => (prevMode === 'user' ? 'environment' : 'user'));
+    setFacingMode((prev) => (prev === 'user' ? 'environment' : 'user'));
   }, []);
 
   return (
     <div style={{ textAlign: 'center', padding: '10px' }}>
+      {/* Numeric Input */}
       <input
         type="tel"
         inputMode="numeric"
@@ -82,42 +139,31 @@ const QrCodeScanner = ({ onScan }) => {
         </label>
       </div>
 
-      {/* QR Reader container */}
+      {/* Video Container */}
       <div
         style={{
           width: '80vw',
           height: 'auto',
-          padding: '2px',
-          margin: '0px auto',
+          margin: '20px auto 0',
+          border: '1px solid #ccc',
+          position: 'relative',
         }}
       >
-        <QrReader
-          key={facingMode}
-          // 3) Remove autofocus by specifying advanced constraints if supported
-          constraints={{
-            facingMode,
-            advanced: [{ focusMode: 'manual' }], 
-            // Some devices/browsers may not support this
-          }}
-          onResult={(result, error) => {
-            if (result) {
-              setScanResult(result?.text || 'No result');
-              onScan(result?.text || 'No result');
-            }
-            // do nothing on error
-          }}
-          videoContainerStyle={{ position: 'relative' }}
-          videoStyle={{
-            // Adjust height for mobile vs. desktop
+        {/* Video Element */}
+        <video
+          ref={videoRef}
+          style={{
+            width: '100%',
             height: isMobile ? '100%' : '70vh',
-            // Use CSS filter to control brightness
-            filter: `brightness(${brightness})`,
+            objectFit: 'cover',
           }}
+          muted
         />
       </div>
 
-      <p>{scanResult}</p>
+      <p style={{ marginTop: '10px' }}>{scanResult}</p>
 
+      {/* Switch Camera Button */}
       <button onClick={handleClick} style={{ marginTop: '10px' }}>
         Switch Camera
       </button>
