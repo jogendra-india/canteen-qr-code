@@ -54,7 +54,7 @@ const AllTransactions = () => {
                 <th>Name (Staff)</th>
                 <th>Total Cost</th>
                 <th>Meals</th>
-                <th>Payment Status</th>
+                {/* <th>Payment Status</th> */}
               </tr>
             </thead>
             <tbody>
@@ -80,7 +80,7 @@ const AllTransactions = () => {
                       .filter(Boolean)
                       .join(', ')}
                   </td>
-                  <td>{transaction.is_paid ? 'Paid' : 'Not Paid'}</td>
+                  {/* <td>{transaction.is_paid ? 'Paid' : 'Not Paid'}</td> */}
                 </tr>
               ))}
             </tbody>

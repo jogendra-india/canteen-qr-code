@@ -113,21 +113,21 @@ function App() {
           >
             Home
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to='/unpaid-transactions'
             className={({ isActive }) =>
               isActive ? 'active-link' : 'inactive-link'
             }
           >
             Unpaid Transactions
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to='/all-transactions'
             className={({ isActive }) =>
               isActive ? 'active-link' : 'inactive-link'
             }
           >
-            All Transactions
+            Transactions
           </NavLink>
         </nav>
         <Routes>
