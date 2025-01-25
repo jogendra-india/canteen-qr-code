@@ -53,7 +53,7 @@ const QrCodeScanner = ({ onScan }) => {
       >
         <QrReader
           key={facingMode}
-          videoStyle={{ height: isMobile ? '100%' : '70%', }}
+          videoStyle={{ height: isMobile ? '100%' : '70vh', }}
           constraints={{ facingMode }}
           videoContainerStyle= {{ position: 'relative' }}
           onResult={(result, error) => {
