@@ -7,6 +7,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import QrCodeScanner from "./QrCodeScanner";
+import ManualCameraExposure from "./QrCodeScannerWithManualControl";
 import apiCallHelper from "./apiCallHelper";
 import UnpaidEmployees from "./UnpaidEmployees";
 import AllTransactions from "./AllTransactions";
@@ -188,7 +189,7 @@ function App() {
             path="/"
             element={
               showScanner ? (
-                <QrCodeScanner onScan={handleScanResult} />
+                <ManualCameraExposure onScan={handleScanResult} />
               ) : matchedEmployee ? (
                 <div className="centered-container-home">
                   <h2>Welcome, {capitalizeName(matchedEmployee.name)}</h2>
