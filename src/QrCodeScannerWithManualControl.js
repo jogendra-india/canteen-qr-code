@@ -1,8 +1,14 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import debounce from "lodash/debounce";
 import jsQR from "jsqr";
 
 const ManualCameraExposure = ({ onScan }) => {
   const videoRef = useRef(null);
+
+  const debouncedOnScan = useCallback(
+    debounce((value) => onScan(value), 500), // Debounce with 500 ms delay
+    []
+  );
 
   // --- CAMERA ACTIVE ON MOUNT ---
   const [cameraActive, setCameraActive] = useState(true);
@@ -190,6 +196,21 @@ const ManualCameraExposure = ({ onScan }) => {
 
   return (
     <div style={{ textAlign: "center", padding: 10 }}>
+      <input
+        type="tel"
+        inputMode="numeric"
+        placeholder="Enter Staff No"
+        onChange={(e) => debouncedOnScan(e.target.value)}
+        style={{
+          width: '70%',
+          maxWidth: '400px',
+          padding: '10px',
+          margin: '0px auto',
+          display: 'block',
+          textAlign: 'center',
+          boxSizing: 'border-box',
+        }}
+      />
       <h2>QR Scan Canteen</h2>
 
       {/* VIDEO PREVIEW */}

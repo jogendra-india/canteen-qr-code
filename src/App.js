@@ -60,7 +60,6 @@ function App() {
     setShowScanner(false); // Disable scanner until data is loaded
     try {
       const result = await apiCallHelper("/employees");
-      console.log("result", result);
       setEmployees(result);
       setLoading(false);
       setShowScanner(true); // Enable scanner once data is loaded
@@ -111,7 +110,7 @@ function App() {
           payload
         );
         // Example response: see your sample, e.g. responseData.staff.name
-        const empName = responseData?.staff?.name || "No Name";
+        const empName = responseData?.staff_details?.name || "No Name";
 
         // Show success toast with employee's name
         showToast(`Transaction successful for ${empName}!`, "success");

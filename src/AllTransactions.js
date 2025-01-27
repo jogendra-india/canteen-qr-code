@@ -50,6 +50,7 @@ const AllTransactions = () => {
           <table className='transactions-table'>
             <thead>
               <tr>
+                <th>S.No.#</th>
                 <th>Date</th>
                 <th>Name (Staff)</th>
                 <th>Total Cost</th>
@@ -58,17 +59,18 @@ const AllTransactions = () => {
               </tr>
             </thead>
             <tbody>
-              {allTransactions.map((transaction) => (
+              {allTransactions.map((transaction, index) => (
                 <tr key={transaction.id}>
+                  <td>{index + 1}</td>
                   <td>{formatDate(transaction.date)}</td>
                   <td>
-                    {`${transaction.staff.name
+                    {`${transaction.staff_details.name
                       .toLowerCase()
                       .split(' ')
                       .map(
                         (word) => word.charAt(0).toUpperCase() + word.slice(1)
                       )
-                      .join(' ')} (${transaction.staff.staff_no})`}
+                      .join(' ')} (${transaction.staff_details.staff_no} - ${transaction.staff_details.staff_type})`}
                   </td>
                   <td>{formatCurrency(transaction.total_cost)}</td>
                   <td>
